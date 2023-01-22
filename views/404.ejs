@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Page not found</title>
+</head>
+<body class="bg-gray-900">
+    <nav>
+        <div class="container flex flex-wrap items-center justify-between mx-auto">
+          <a href="/" class="py-2 px-4 flex items-center">
+            <span class="self-center text-xl font-semibold whitespace-nowrap text-white">E-Vote</span>
+          </a>
+        </div>
+    </nav>
+    <div class=" flex  text-white antialiased flex-col  overflow-hidden  py-6 sm:py-12 px-20">
+        <div class="w-full">
+            <div>
+                <% if (messages && messages.error && messages.error.length > 0) { %>
+                    <% for(var i=0; i<messages.error.length; i++) { %>
+                        <p class="bg-gray-600 text-white my-3 list-none rounded-md px-4 py-2"><%= messages.error[i] %></p>
+                    <% } %>
+                <% } %>
+            </div>
+            <div class="grid grid-cols-12 items-center mt-10">
+                <div class="flex flex-col gap-6 col-start-2 col-span-6">
+                  <h1
+                  class="max-w-2xl mb-4 text-4xl font-extrabold leading-none tracking-tight md:text-5xl xl:text-6xl dark:text-white"
+                >
+                  404.
+                </h1>
+                    <span class="text-2xl font-medium">Uh-oh! Looks like you're lost!</span>
+                </div>
+                <div class="hidden md:block col-span-4 col-start-8">
+                    <img src="/images/404.svg" alt="hero image">
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
