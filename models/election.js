@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Election.belongsTo(models.Admin, {
-        foreignKey: "adminID",
+        foreignKey: "admId",
       });
       Election.hasMany(models.question, {
         foreignKey: "electionID",
@@ -20,9 +20,9 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
 
-    static async add(adminID, name) {
+    static async add(admId, name) {
       const res = await Election.create({
-        adminID: adminID,
+        admId: admId,
         name: name,
         launched: false,
         ended: false,
