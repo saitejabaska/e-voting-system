@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Preview Result</title>
+    <style>
+      body {
+        background-color: rgb(230, 219, 240);
+      }
+    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body>
+    <div class="grid grid-cols-6">
+      <div class="col-span-4 col-start-2">
+        <%- include("header.ejs") %>
+
+        <div class="mt-4 mx-auto">
+          <a
+            href="/election/<%= election.id %>"
+            class="rounded text-white bg-black text-sm inline px-2 py-2"
+          >
+            <- Go to Election Page</a
+          >
+        </div>
+
+        <h1 class="text-center mt-5 text-3xl font-bold text-red-800">
+          Preview Result of election - <%= election.title %>
+        </h1>
+        <div class="mt-4 text-gray-700">
+          <h2 class="text-center text-xl">
+            Total Voters = <span class="font-bold"><%=totalVoters %></span>
+          </h2>
+          <h2 class="text-center text-xl">
+            Remian Voting = <span class="font-bold"><%=remianVoting %></span>
+          </h2>
+          <h2 class="text-center text-xl">
+            Voting Count = <span class="font-bold"><%= votingCount%></span>
+          </h2>
+        </div>
+
+        <ol class="list-decimal mt-4 ml-20 flex gap-x-24">
+          <% for (let i = 0; i < quetions.length; i++) { %>
+          <li class="my-4">
+            <p class="font-bold text-xl">Title : <%= quetions[i].title %></p>
+            <p class="text-gray-700">
+              Description - <%= quetions[i].description %>
+            </p>
+            <div class="mt-4">
+              <canvas
+                id="mychart-<%= quetions[i].id %>"
+                width="200"
+                height="200"
+              ></canvas>
+            </div>
+          </li>
+          <% } %>
+        </ol>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+      const votes = JSON.parse("<%- JSON.stringify(Votes) %>");
+      const options = <%- JSON.stringify(optionList) %>;
+      const color = ["pink","cyan","blueviolet","aqua","gray","blue","violet","bisque"]
+
+      const quetionIds = JSON.parse("<%- JSON.stringify(quetionId) %>");
+
+      for (let i = 0; i < quetionIds.length; i++) {
+        const ctx = document.getElementById(`mychart-${quetionIds[i]}`);
+
+        new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: options[i],
+            datasets: [{
+              label: 'Votes',
+              data: votes[i],
+              borderWidth: 3,
+              borderColor: 'black',
+              backgroundColor : color
+            }]
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true,
+                ticks: {
+                  color: 'blue',
+                  font : {
+                    size : 13
+                  }
+                }
+              },
+              x :{
+                ticks: {
+                  color: 'green',
+                  font : {
+                    size : 15
+                  }
+                }
+              }
+            },
+            responsive : false,
+            plugins: {
+              tooltip: {
+                enabled: true,
+                backgroundColor : "black",
+                titleFont: {
+                  size: 18
+                },
+                bodyFont: {
+                  size: 15,
+                },
+                titleColor: "white",
+                titleFontFamily : "Conic Sans MS",
+                titleFontStyle : "bold italic",
+                titleAlign: "center",
+                titleSpacing : 10,
+                titleMarginBottom : 10,
+                borderSpacing: 10,
+                bodyAlign:"center",
+              }
+            }
+
+          }
+        });
+
+      }
+    </script>
+  </body>
+</html>

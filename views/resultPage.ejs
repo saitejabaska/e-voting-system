@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Result of Election</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <div class="grid grid-cols-6">
+      <div class="col-span-4 col-start-2">
+        <div class="flex justify-end">
+          <a
+            href="/signout/<%= election.url %>/voter"
+            class="font-bold text-white bg-red-700 px-3 py-1 rounded"
+          >
+            Sign Out
+          </a>
+        </div>
+        <h1 class="text-center mt-3 text-2xl text-red-800">
+          <%= election.title %> has ended!!!
+        </h1>
+
+        <h1 class="text-center mt-3 text-3xl font-bold text-red-800">
+          Result of an election - <%= election.title %>
+        </h1>
+
+        <% if(messages.success){ %>
+        <div class="alert alert-success mt-2 font-bold fade show" role="alert">
+          <%= messages.success %>
+        </div>
+        <% } %>
+
+        <div class="mt-2 text-gray-900">
+          <h2 class="text-center text-xl">
+            Total Votes = <span class="font-bold"><%= votingCount %></span>
+          </h2>
+        </div>
+
+        <ol class="list-decimal mt-2 ml-20 flex gap-x-24">
+          <% for (let i = 0; i < quetions.length; i++) { %>
+          <li class="my-2">
+            <p class="font-bold text-xl">Title : <%= quetions[i].title %></p>
+            <p class="text-gray-700">
+              Description - <%= quetions[i].description %>
+            </p>
+            <p class="my-2 text-gray-900">
+              Your Choise -
+              <span class="font-bold underline pb-2 cursor-pointer"
+                ><%= voterVotePerQuetion[i] %></span
+              >
+            </p>
+            <div class="mt-3">
+              <canvas
+                id="mychart-<%= quetions[i].id %>"
+                width="230"
+                height="250"
+              ></canvas>
+            </div>
+          </li>
+          <% } %>
+        </ol>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+      const votes = JSON.parse("<%- JSON.stringify(Votes) %>");
+      const options = <%- JSON.stringify(optionList) %>;
+      const color = ["pink","cyan","blueviolet","aqua","gray","blue","violet","bisque"]
+
+      const quetionIds = JSON.parse("<%- JSON.stringify(quetionId) %>");
+
+      for (let i = 0; i < quetionIds.length; i++) {
+        const ctx = document.getElementById(`mychart-${quetionIds[i]}`);
+
+        new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: options[i],
+            datasets: [{
+              label: 'Votes',
+              data: votes[i],
+              borderWidth: 3,
+              borderColor: 'black',
+              backgroundColor : color
+            }]
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true,
+                ticks: {
+                  color: 'blue',
+                  font : {
+                    size : 13
+                  }
+                }
+              },
+              x :{
+                ticks: {
+                  color: 'green',
+                  font : {
+                    size : 15
+                  }
+                }
+              }
+            },
+            responsive : false,
+            plugins: {
+              tooltip: {
+                enabled: true,
+                backgroundColor : "black",
+                titleFont: {
+                  size: 18
+                },
+                bodyFont: {
+                  size: 15,
+                },
+                titleColor: "white",
+                titleFontFamily : "Conic Sans MS",
+                titleFontStyle : "bold italic",
+                titleAlign: "center",
+                titleSpacing : 10,
+                titleMarginBottom : 10,
+                borderSpacing: 10,
+                bodyAlign:"center",
+              }
+            }
+          }
+        });
+      }
+    </script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>

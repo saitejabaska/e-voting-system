@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Thank You</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <div
+      style="width: 100vw; height: 100vh; background-color: cornflowerblue"
+      class="flex items-center flex-col content-center justify-center"
+    >
+      <div class="mt-6">
+        <h1 class="text-3xl font-bold text-center">
+          Thnak you, You sucesscfully voted....
+        </h1>
+        <p class="text-xl text-gray-700 mt-4 font-bold text-center">
+          Wait for result to end a election
+        </p>
+      </div>
+      <div class="flex justify-center mt-4">
+        <img src="/img/thank.png" alt="ThankYou" />
+      </div>
+      <div class="mt-5">
+        <a
+          href="/signout/<%= election.url %>/voter"
+          class="font-bold text-white bg-red-700 px-3 py-2 rounded"
+        >
+          Sign Out
+        </a>
+      </div>
+    </div>
+  </body>
+</html>

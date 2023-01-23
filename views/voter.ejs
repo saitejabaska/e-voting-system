@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="csrf-token" content="<%= csrfToken %>" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Voters</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="/css/style.css" />
+    <script>
+      const token = document
+        .querySelector("meta[name='csrf-token']")
+        .getAttribute("content");
+
+      const deleteVoter = (id) => {
+        fetch(`/delVoter/${id}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            _csrf: token,
+          }),
+        })
+          .then((res) => {
+            if (res.ok) {
+              window.location.reload();
+            }
+          })
+          .catch(err);
+        {
+          console.log(err);
+        }
+      };
+    </script>
+  </head>
+  <body>
+    <div class="grid grid-cols-6">
+      <div class="col-span-2 col-start-3">
+        <%- include("header.ejs") %>
+
+        <div class="mt-4 mx-auto">
+          <a
+            href="/election/<%= electionID %>"
+            class="rounded text-white bg-gray-500 text-sm inline px-2 py-2"
+          >
+            <- Go to Election Page</a
+          >
+        </div>
+
+        <h1 class="mt-2 text-2xl text-green-800 text-center font-semibold">
+          Add Voters
+        </h1>
+
+        <% if(messages && messages.error && messages.error.length > 0)  { %>
+          <% for(var i=0; i<messages.error.length; i++) { %>
+            <li class="mb-2 text-rose-500"> <%= messages.error[i] %></li>
+          <% } %>
+        <% } %>
+
+        <% if(messages.success){ %>
+          <div class="alert alert-success" role="alert">
+              <%= messages.success %>
+          </div>
+        <% } %>
+
+        <form action="/election/<%= electionID %>/addvoter" method="post">
+          <input type="hidden" name="_csrf" value="<%=csrfToken%>" />
+          <div>
+            <label for="vid" class="py-1 text-xl text-gray-900"
+              >Voter ID :</label
+            >
+            <input
+              type="text"
+              id="vid"
+              name="voterId"
+              class="w-full border-2 border-gray-800 rounded px-4 py-2 my-2 text-gray-900"
+            />
+          </div>
+          <div>
+            <label for="pwd" class="py-1 text-xl text-gray-900"
+              >Password :</label
+            >
+            <input
+              type="password"
+              id="pwd"
+              name="password"
+              class="w-full border-2 border-gray-600 rounded px-4 py-2 my-2 text-gray-900"
+            />
+          </div>
+          <div>
+            <input
+              type="submit"
+              value="Add Voter"
+              class="bg-green-600 text-white px-5 py-2 rounded my-1"
+            />
+          </div>
+        </form>
+
+        <h2 class="text-xl mt-4 font-semibold">Voter List</h2>
+
+        <% if(voters.length === 0) { %>
+          <p class="text-center mt-2 text-red-700 ml-3">You didn't have added a voters yet!!!</p>
+        <% } %>
+
+        <ul class="list-disc ml-5">
+          <% for(let i=0; i < voters.length; i++) {%>
+          <li class="my-3">
+            <div>
+              <span><%= voters[i].voterId %></span>
+              <button
+                class="rounded text-sm px-2 py-1 ml-2 text-red-800 underline"
+                onclick="deleteVoter(<%= voters[i].id %>)"
+              >
+                Delete Voter
+              </button>
+
+              <button
+                type="button"
+                class="rounded text-sm px-2 py-1 ml-2 text-blue-800 underline"
+                data-bs-toggle="modal"
+                data-bs-target="#exampleModal<%= voters[i].id %>"
+              >
+                Edit Password
+              </button>
+              <div
+                class="modal fade"
+                id="exampleModal<%= voters[i].id %>"
+                tabindex="-1"
+                aria-labelledby="exampleModalLabel"
+                aria-hidden="true"
+              >
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="exampleModalLabel">
+                        Modify Voter
+                      </h1>
+                      <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                      ></button>
+                    </div>
+                    <div class="modal-body">
+                      <form action="/election/<%= electionID %>/modify/voter/<%= voters[i].id %>" method="post">
+                        <input type="hidden" name="_csrf" value="<%=csrfToken%>" />
+                        <div class="mb-3">
+                          <label for="recipient-name" class="col-form-label"
+                            >Update Password :</label
+                          >
+                          <input
+                            type="text"
+                            class="form-control border-2 border-gray-900"
+                            id="recipient-name"
+                            name="pwd"
+                          />
+                        </div>
+                        <input
+                          type="submit"
+                          class="px-2 py-1 ml-2 text-sm bg-blue-400 border-2 border-gray-900"
+                        >
+
+                        </input>
+                      </form>
+                    </div>
+                    <div class="modal-footer">
+                      <button
+                        type="button"
+                        class="px-2 py-1 ml-2 text-sm bg-blue-400 border-2 border-gray-900"
+                        data-bs-dismiss="modal"
+                      >
+                        Close
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </li>
+          <% } %>
+        </ul>
+      </div>
+    </div>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>

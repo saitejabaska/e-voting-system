@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="csrf-token" content="<%= csrfToken %>" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quetion Page - ELection</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD"
+      crossorigin="anonymous"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/css/style.css" />
+    <script>
+      const token = document
+        .querySelector("meta[name='csrf-token']")
+        .getAttribute("content");
+
+      const deleteQuetion = (eid, id) => {
+        fetch(`/election/${eid}/delQuetion/${id}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            _csrf: token,
+          }),
+        })
+          .then((res) => {
+            if (res.ok) {
+              window.location.reload();
+            }
+          })
+          .catch(err);
+        {
+          console.log(err);
+        }
+      };
+    </script>
+  </head>
+  <body>
+    <div class="grid grid-cols-6">
+      <div class="col-span-2 col-start-3">
+        <%- include("header.ejs") %>
+
+        <div class="mt-4 mx-auto">
+          <a
+            href="/election/<%= election.id %>"
+            class="rounded text-white bg-black text-sm inline px-2 py-2"
+          >
+            <- Go to Election Page</a
+          >
+        </div>
+
+        <h2 class="text-xl mt-3 mb-2 font-semibold">Create a Quetions</h2>
+
+        <% if(messages && messages.error && messages.error.length > 0)  { %>
+          <% for(var i=0; i<messages.error.length; i++) { %>
+            <li class="mb-2 text-rose-500"> <%= messages.error[i] %></li>
+          <% } %>
+        <% } %>
+
+        <% if(messages.success){ %>
+          <div class="alert alert-success" role="alert">
+              <%= messages.success %>
+          </div>
+        <% } %>
+
+        <form
+          action="/addquetion/<%= election.id %>"
+          method="post"
+          class="mb-3"
+        >
+        <input type="hidden" name="_csrf" value="<%=csrfToken%>" />
+          <div>
+            <div class="mb-2">
+              <label for="name">Quetion Title :</label>
+              <input
+                type="text"
+                id="name"
+                name="title"
+                placeholder="Title......"
+                class="rounded border-2 border-gray-900 my-1 w-full p-2 text-sm"
+              />
+            </div>
+            <div class="mb-2">
+              <label for="desc" class="mb-1">Quetion Description :</label>
+              <textarea
+                name="desc"
+                id="desc"
+                placeholder="Description...."
+                class="rounded border-2 border-gray-900 my-1 w-full p-2 text-sm leading-4"
+                cols="30"
+                rows="3"
+              ></textarea>
+            </div>
+            <div class="">
+              <input
+                type="submit"
+                value="Add Quetion"
+                class="text-white bg-green-600 px-5 rounded py-2 font-medium mr-2 my-1 mb-2"
+              />
+            </div>
+          </div>
+        </form>
+
+        <h2 class="text-xl font-semibold">Manage Quetions</h2>
+        <p class="text-gray-700">Your Election have a <span class="font-semibold"><%= que.length %></span> Quetion. </p>
+        <ol class="list-decimal">
+          <% for(let i = 0; i < que.length; i++) { %>
+          <li class="ml-4 my-1 mt-3">
+            <div>
+            <span><%= que[i].title %></span>
+            <a
+              href="/election/<%= election.id %>/quetion/<%= que[i].id %>/addOptions"
+              class="border-2 border-gray-900 rounded py-1 underline font-semibold text-sm px-2 text-blue-700 ml-2"
+              >Manage Option</a
+            >
+            <button
+              class="border-2 border-gray-900 rounded py-1 underline font-semibold text-sm px-2 text-orange-700 ml-2"
+              onclick="deleteQuetion(<%= election.id %>,<%= que[i].id %>)"
+            >
+              Delete Quetion
+            </button>
+
+            <button
+                type="button"
+                class="px-2 py-1 ml-2 text-sm bg-blue-400 border-2 border-gray-900"
+                data-bs-toggle="modal"
+                data-bs-target="#exampleModal<%=que[i].id %>"
+              >
+                Edit Quetion
+              </button>
+              <div
+                class="modal fade"
+                id="exampleModal<%=que[i].id %>"
+                tabindex="-1"
+                aria-labelledby="exampleModalLabel"
+                aria-hidden="true"
+              >
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="exampleModalLabel">
+                        Modify Quetion
+                      </h1>
+                      <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                      ></button>
+                    </div>
+                    <div class="modal-body">
+                      <form action="/modify/<%= election.id %>/quetion/<%= que[i].id %>" method="post">
+                        <input type="hidden" name="_csrf" value="<%=csrfToken%>" />
+                        <div class="mb-3">
+                          <label for="recipient-name<%=que[i].id %>" class="col-form-label"
+                            >Quetion Title :</label
+                          >
+                          <input
+                            type="text"
+                            class="form-control border-2 border-gray-900"
+                            id="recipient-name<%=que[i].id %>"
+                            name="title"
+                          />
+                        </div>
+                        <div class="mb-3">
+                          <label for="message-text<%=que[i].id %>" class="col-form-label"
+                            >Description :</label
+                          >
+                          <textarea
+                            name="desc"
+                            id="message-text<%= que[i].id %>"
+                            placeholder="Description...."
+                            class="form-control border-2 border-gray-900"
+                            cols="25"
+                            rows="3"
+                          ></textarea>
+                        </div>
+                        <input
+                          type="submit"
+                          class="px-2 py-1 ml-2 text-sm bg-blue-400 border-2 border-gray-900"
+                        >
+
+                        </input>
+                      </form>
+                    </div>
+                    <div class="modal-footer">
+                      <button
+                        type="button"
+                        class="px-2 py-1 ml-2 text-sm bg-blue-400 border-2 border-gray-900"
+                        data-bs-dismiss="modal"
+                      >
+                        Close
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </li>
+          <% } %>
+        </ol>
+      </div>
+    </div>
+
+    <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+    crossorigin="anonymous"
+  ></script>
+  </body>
+</html>

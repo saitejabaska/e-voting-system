@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Preview Election</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body style="background-color: bisque">
+    <div class="grid grid-cols-6">
+      <div class="col-span-2 col-start-3">
+        <%- include("header.ejs") %>
+
+        <h1 class="mt-4 text-2xl font-bold text-pink-700 text-center mb-4">
+          Preview Of Election - <%= election.title %>
+        </h1>
+
+        <% if(quetions.length === 0) { %>
+        <p class="text-center mt-2 text-red-700 ml-3">
+          You didn't have added a Quention in ballot yet!!!
+        </p>
+        <% } %>
+
+        <ol class="list-decimal ml-4">
+          <% for (let i = 0; i < quetions.length; i++) { %>
+          <li class="my-2">
+            <p class="font-bold"><%= quetions[i].title %></p>
+            <p class="text-gray-700">
+              Description - <%= quetions[i].description %>
+            </p>
+            <% for (let j = 0; j < options[i].length; j++) { %>
+            <div class="mt-2">
+              <input
+                type="radio"
+                name="<%= quetions[i].id %>"
+                value="<%= options[i][j].optionName %>"
+                id="<%= quetions[i].id %>-<%= options[i][j].id %>"
+              />
+              <label
+                class=""
+                for="<%= quetions[i].id %>-<%= options[i][j].id %>"
+              >
+                <%= options[i][j].optionName %>
+              </label>
+            </div>
+            <% } %>
+          </li>
+          <% } %>
+        </ol>
+
+        <div class="mt-4 flex justify-center">
+          <a
+            href="/election/<%= election.id %>"
+            class="rounded border-2 border-black px-3 py-1 bg-red-700 text-white hover:bg-red-800"
+          >
+            Go to Election Page
+          </a>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
