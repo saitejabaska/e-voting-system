@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Admin.hasMany(models.Election, {
-        foreignKey: "adminID",
+        foreignKey: "admId",
       });
     }
 
