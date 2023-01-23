@@ -1,0 +1,74 @@
+<html>
+
+<head>
+  <title>Online Voting Platform</title>
+  <meta name="csrf-token" content="<%= csrf %>" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script>
+    // function to delete election
+    function deleteElection(id) {
+      var token = document
+        .querySelector('meta[name="csrf-token"]')
+        .getAttribute("content");
+
+      fetch(`/election/${id}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            _csrf: token
+          }),
+        }).then((res) => {
+          if (res.ok) {
+            window.location.reload();
+          }
+        })
+        .catch((err) => console.log(err));
+    }
+  </script>
+  <style>
+    td{
+     text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+
+  <% if (elections.length === 0) { %>
+  <h1 style="text-align:center;color:black;font-size:large;font-weight:bold;margin-top:2%">No elections created yet</h1>
+  <% } %>
+ 
+<table style="font-family: Arial, Helvetica, sans-serif;
+border-collapse: collapse;
+width: 50%;
+margin-left: 25%;
+margin-top: 4%;
+border-color: black;">
+  <% for (var i=0; i<elections.length; i++) { %>
+    
+ 
+
+
+
+<tr>
+  <td style=" border: 1px solid black;
+  "><%= i+1 %></td>
+  <td style=" border: 1px solid black;
+"><%= elections[i].name %></td>
+  <td style=" border: 1px solid black;color: rgb(4, 105, 136);
+"><a href="/election/<%= elections[i].id %>"><u>View </u></a></td>
+  <td style=" border: 1px solid black;
+"><button onclick="deleteElection('<%= elections[i].id %>')"><i class="fa fa-close" style="font-size:48px;color:rgb(34, 72, 82)"></i></button></td>
+</tr>
+
+
+  <% } %>
+</table>
+
+</body>
+
+</html>
